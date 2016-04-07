@@ -1,6 +1,127 @@
 ﻿@{
     ViewBag.Title = "Рассылки";
+    IList<entityModels.region> regionList = ViewBag.RegionList;
+    IList<entityModels.category> categoryList = ViewBag.CategoryList;
+    IList<infoModels.param_name> paramNameList = ViewBag.ParamNameList;
+
 }
 
-<h2>Delivery</h2>
+<div class="page-content-inner">
+    <div class="portlet light portlet-fit ">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-envelope font-green"></i>
+                <span class="caption-subject font-green bold uppercase">@ViewBag.Title</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="portlet-body form">
+                        <form role="form">
+                            <div class="form-body">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <input type="text" class="form-control" id="input-email">
+                                    <label for="input-email">Email</label>
+                                    <span class="help-block"></span>
+                                </div>
 
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <select class="form-control" id="select-region">
+                                        @foreach (entityModels.region item in regionList)
+                                        {
+                                            <option value="@item.id">@item.name</option>
+                                        }
+                                    </select>
+                                    <label for="select-region">Регион</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <select class="form-control" id="select-category">
+                                        @foreach (entityModels.category item in categoryList)
+                                        {
+                                            <option value="@item.id">@item.name</option>
+                                        }
+                                    </select>
+                                    <label for="select-category">Категория</label>
+                                </div>
+
+                                <div class="form-group form-md-checkboxes" id="div-chk-for-category">
+                                    <label>Параметры</label>
+                                    <div class="md-checkbox-list" id="div-chk-list-for-category"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions noborder">
+                                <button type="button" class="btn blue">Сохранить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    тут будет хелп и несколько слов о рассылке
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+@section PageLevelScripts {
+<script>
+    $(document).ready(function () {
+        showParamFromCategory();
+
+        $("#select-category").bind("change", function () {
+            showParamFromCategory();
+        });
+
+        
+    });
+
+    function initChkParam() {
+        $(".check-param").bind("change", function () {
+            var param_id = $(this).attr("name");
+            $("#div-chk-param-value-" + param_id).empty();
+            if ($(this).prop("checked")) {
+                $.getJSON('/data/getParamValues/', {
+                    "param_id": param_id
+                }, function (data) {
+                    for (i = 0; i < data.length; i++) {
+                        $("#div-chk-param-value-"+param_id).append('' +
+                            '<div class="md-checkbox" id="div-chk-param-'+param_id+'-value-' + data[i].value_id + '">' +
+                            '<input type="checkbox" id="chk-param-' + param_id + '-value-' + data[i].value_id + '" name="' + data[i].value_id + '" class="md-check">' +
+                            '<label for="chk-param-' + param_id + '-value-' + data[i].value_id + '">' +
+                            '<span class="inc"></span>' +
+                            '<span class="check"></span>' +
+                            '<span class="box"></span> ' + data[i].value + '' +
+                            '</label>' +
+                        '</div>');
+                    }
+                });
+            }
+        });
+    }
+
+    function showParamFromCategory() {
+        $("#div-chk-list-for-category").empty();
+        var category_id = $("#select-category").val();
+        $.getJSON('/data/getParams/', {
+            "category_id": category_id
+        }, function (data) {
+            for (i = 0; i < data.length; i++) {
+                $("#div-chk-list-for-category").append('<div class="row"><div class="col-md-6">' +
+                    '<div class="md-checkbox" id="div-chk-param-name-'+data[i].id+'">'+
+                    '<input type="checkbox" id="chk-param-name-'+data[i].id+'" name="'+data[i].id+'" class="md-check check-param">'+
+                    '<label for="chk-param-name-'+data[i].id+'">'+
+                    '<span class="inc"></span>'+
+                    '<span class="check"></span>'+
+                    '<span class="box"></span> '+data[i].name+''+
+                    '</label>'+
+                '</div></div><div class="col-md-6"><div class="md-checkbox-list" id="div-chk-param-value-' + data[i].id + '"></div></div></div>');
+            }
+            initChkParam();
+        });
+    }
+</script>
+}

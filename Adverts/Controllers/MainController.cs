@@ -16,6 +16,9 @@ namespace Adverts.Controllers
 
         public ActionResult Delivery()
         {
+            ViewBag.RegionList = entityModels.region.getList();
+            ViewBag.CategoryList = entityModels.category.getList();
+            ViewBag.ParamNameList = infoModels.param_name.getList();
             return View();
         }
     }

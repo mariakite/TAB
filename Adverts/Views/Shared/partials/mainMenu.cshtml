@@ -1,15 +1,8 @@
-﻿<div class="navbar navbar-inverse navbar-fixed-top">
+﻿<div class="page-header-menu">
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            @Html.ActionLink("ТАВ", "Index", "Main", new { area = "" }, new { @class = "navbar-brand" })
-        </div>
-        <div class="navbar-collapse collapse">
+        <div class="hor-menu  ">
             <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("ТАВ", "Index", "Main", new {@class="navbar-brand"})</li>
                 <li>@Html.ActionLink("Рассылки", "Delivery", "Main")</li>
             </ul>
         </div>
