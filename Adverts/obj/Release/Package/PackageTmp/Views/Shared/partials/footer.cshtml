@@ -1,0 +1,19 @@
+﻿@{
+    int nowYear = DateTime.Now.Year;
+    int startYear = constant.str.startYear;
+    string controllerName = ViewContext.RouteData.Values["controller"].ToString().ToLower();
+}
+
+<div class="page-footer">
+    <div class="container">
+        &copy; @Html.Raw((nowYear > startYear ? string.Format("{0}&nbsp;<span class=\"years\">&ndash;</span>&nbsp;{1}", startYear, nowYear) : startYear.ToString()))&nbsp;@if (Request.ApplicationPath.Equals(Request.RawUrl))
+        {
+            <text>@constant.str.name_project</text>
+}
+else
+{
+            <a href="/">@constant.str.name_project</a>
+        }
+        <div style="float:right">Тех. поддержка: <nobr>+7 (804) 333-16-15</nobr> (звонок бесплатный)</div>
+    </div>
+</div>

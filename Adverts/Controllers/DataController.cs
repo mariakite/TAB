@@ -20,5 +20,11 @@ namespace Adverts.Controllers
             ViewData["result"] = JSONHelper.toJSON(infoModels.param_value.getList(param_id));
             return PartialView("partials/result");
         }
+
+        public ActionResult saveDeliveryParam(string email, int region_id, int category_id, string param_ids, string value_ids)
+        {
+            ViewData["result"] = entityModels.delivery.saveDelivery(email, region_id, category_id, param_ids, value_ids);
+            return PartialView("partials/result");
+        }
     }
 }

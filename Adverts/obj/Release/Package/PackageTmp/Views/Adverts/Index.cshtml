@@ -1,0 +1,480 @@
+﻿@{
+    ViewBag.Title = "Поиск объявлений";
+    IList<entityModels.region> regionList = ViewBag.RegionList;
+    IList<entityModels.category> categoryList = ViewBag.CategoryList;
+    int category_id = (int)ViewBag.category_id;
+    int region_id = (int)ViewBag.region_id;
+    bool payment = (bool)ViewBag.payment;
+    var free = (bool)ViewBag.Free;
+    string specifier = "N";
+    System.Globalization.CultureInfo culture = System.Globalization.CultureInfo.CreateSpecificCulture("fr-CA");
+}
+@model IList<entityModels.advert>
+
+@section PageLevelStyles{
+    <link href="~/Assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/Assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        .select2-container--bootstrap .select2-selection {
+            border: none !important;
+        }
+
+        .form .form-actions {
+            padding: 0 !important;
+            text-align: right !important;
+        }
+
+        th {
+            text-align: center !important;
+        }
+
+        a.dotLink {
+            text-decoration: none;
+            border-bottom: 1px dotted;
+            line-height: 1em;
+            margin-top: .3em;
+            color: #32c5d2;
+        }
+
+        a.dotLink:hover {
+            text-decoration: none !important;
+            color: #32c5d2;
+        }
+
+        .well{
+            background-color: #ffffff !important;
+            padding: 10px !important;
+        }
+
+        .form-body{
+            padding: 10px !important;
+        }
+        .paymentDiv{
+            padding: 2px;
+            text-align: center;
+            position: fixed !important;
+            z-index: 10001 !important;
+            top: 250px !important;    
+            cursor: pointer !important;
+            display: none;
+        }
+    </style>
+}
+
+<div class="page-content-inner">
+    
+    <div class="portlet light portlet-fit ">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-magnifier font-green"></i>
+                <span class="caption-subject font-green bold uppercase">@ViewBag.Title</span>
+            </div>
+        </div>
+        <div class="portlet-body mt-element-ribbon">
+            <div class="paymentDiv ribbon ribbon-right ribbon-clip ribbon-shadow ribbon-round ribbon-border-dash-hor uppercase">
+                <div class="ribbon-sub ribbon-clip ribbon-right"></div> 
+                <label id="label-check"></label>
+            </div>
+
+            <div class="alert alert-info alert-dismissable" style="display:none;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                Выберите интересующие вас объявления и нажмите кнопку оплаты. Минимальная покупка &mdash; 10 объявлений.
+            </div>
+
+            <div class="portlet-body form">
+                <div class="well well-sm">
+                    <form role="form" id="form-advers" action="@Url.Action("Index","Adverts")" method="get">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input form-md-floating-label">
+                                        <select class="form-control select2" id="select-region" name="region_id">
+                                            @foreach (entityModels.region item in regionList)
+                                            {
+                                                if (item.id == region_id)
+                                                {
+                                                    <option value="@item.id" selected>@item.name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.id">@item.name</option>
+                                                }
+                                            }
+                                        </select>
+                                        <label for="select-region">Регион</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-line-input form-md-floating-label">
+                                        <select class="form-control select2" id="select-category" name="category_id">
+                                            @foreach (entityModels.category item in categoryList)
+                                            {
+                                                if (item.id == category_id)
+                                                {
+                                                    <option id="option-category-@item.id" value="@item.id" selected>@item.name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option id="option-category-@item.id" value="@item.id">@item.name</option>
+                                                }
+
+                                            }
+                                        </select>
+                                        <label for="select-category">Категория</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-md-checkboxes" id="div-chk-for-category">
+                                        <label><a href="#" class="dotLink" id="a-param-slide"><i class="fa fa-caret-down"></i><i class="fa fa-caret-up" style="display:none"></i>&nbsp;Параметры фильтра</a></label>
+                                        <div class="md-checkbox-list" id="div-chk-list-for-category" style="display:none;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" style="float:right; vertical-align:bottom">
+                                    <div class="form-actions noborder">
+                                        <button type="submit" class="btn blue">Поиск</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @if (Model.Count() > 0)
+            {
+                <div class="table-scrollable">
+                    <table class="table table-bordered table-hover" id="table-adverts">
+                        <thead>
+                            <tr>
+                                @if (!free)
+                                {
+                                    <th>
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" id="chk-adverts-all" class="md-check">
+                                            <label for="chk-adverts-all">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                            </label>
+                                        </div>
+                                    </th>
+                                }
+                                <th> Объявление </th>
+                                <th> Цена, <span class="rubCSS">Р</span> </th>
+                                <th> Параметры </th>
+                                <th> Телефон </th>
+                                <th> Имя </th>
+                                <th>  </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (entityModels.advert item in Model)
+                            {
+                                <tr>
+                                    @if (!free)
+                                    {
+                                        <td>
+                                            @if (item.phone == "")
+                                            {
+                                                <div class="md-checkbox">
+                                                    <input type="checkbox" id="chk-advert-@item.id" name="@item.id" class="md-check">
+                                                    <label for="chk-advert-@item.id">
+                                                        <span></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span>
+                                                    </label>
+                                                </div>
+                                            }
+                                        </td>
+                                    }
+                                    <td class="description">
+                                        <a href="#@item.id" name="@item.id" class="dotLink">@item.title</a>
+                                        <div id="div-desription-@item.id" class="note note-success" style="display:none; z-index: 100; position: absolute; max-width: 600px; margin-left: 50px;">@item.description</div>
+                                    </td>
+                                    <td align="right">@item.price.ToString(specifier, culture)</td>
+                                    <td>
+                                        @foreach (string param in item.@params)
+                                        {
+                                            <span>@param</span><br />
+                                        }
+                                    </td>
+                                    <td class="phone">
+                                        @if (item.phone == "")
+                                        {
+                                            <a href="#@item.id" name="@item.id" class="dotLink">Номер&nbsp;скрыт</a>
+                                            <div id="div-phone-@item.id" class="note note-success" style="display:none; z-index: 100; position: absolute; max-width: 300px; margin-left: 10px;">Функция платная.<br />Выберите интересующие вас объявления и оплатите.<br />Тариф: <nobr>1 объявление &mdash; 1 рубль.</nobr></div>
+                                        }
+                                        else
+                                        {
+                                            @item.phone
+                                        }
+                                    </td>
+                                    <td>@item.name</td>
+                                    <td align="center"><a href="@item.url" target="_blank" title="Объявление на Avito"><i class="icon-link"></i></a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                if (payment)
+                {
+                    <p>Возможно, мы еще не получили подтверждение оплаты. Попробуйте обновить страницу.</p>
+                }
+                else
+                {
+                    <p>В базе нет записей по выбранным параметрам.</p>
+                }
+
+            }
+        </div>
+    </div>
+</div>
+
+
+@section PageLevelScripts {
+    <script src="~/Assets/global/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/Assets/global/plugins/select2/js/i18n/ru.js"></script>
+    <script src="~/Assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="~/static/js/main.js"></script>
+    <script>
+        var free = @(free.ToString().ToLower());
+        var count_checked_advert = 0;
+        var spb_id = @((int)constant.str.region_spb_id);
+
+        var ComponentsSelect2 = function () {
+
+            var initSelect2 = function () {
+                $.fn.select2.defaults.set("theme", "bootstrap");
+                $(".select2").select2({
+                    width: null
+                });
+            }
+
+            return {
+                init: function () {
+                    initSelect2();
+                }
+            };
+
+        }();
+
+        jQuery(document).ready(function () {
+            if (getCookie("hide_info")!="1"){
+                $(".alert-info").show();
+            }
+
+            $(".alert .close").bind("click", function(){
+                setCookie("hide_info", "1", new Date(), "/");
+            });
+                       
+            ComponentsSelect2.init();
+
+            showParamFromCategory();
+            $("#select-category").bind("change", function () {
+                showParamFromCategory();
+            });
+
+            if ($("#select-region").val()!=spb_id){
+                $("#select-category").select2("val", 1);
+                $("#select-category").attr("disabled",true);
+            }
+
+            $("#select-region").bind("change", function () {
+                if ($("#select-region").val()==spb_id){
+                    $("#select-category").attr("disabled",false);
+                }
+                else{
+                    $("#select-category").select2("val", 1);
+                    $("#select-category").attr("disabled",true);
+                }
+            });
+
+            $("#a-param-slide").click(function () {
+                $("#div-chk-list-for-category").toggle();
+                $("#a-param-slide .fa").toggle();
+            });
+
+            $("#form-advers").bind("submit", function (e) {
+                e.preventDefault();
+                searchAdverts();
+            });
+
+            $("#chk-adverts-all").bind("change", function () {
+                if ($("#chk-adverts-all").prop("checked")){
+                    $("#table-adverts tbody .md-check").prop("checked", true);
+                }
+                else{
+                    $("#table-adverts tbody .md-check").prop("checked", false);
+                }
+            });
+
+            
+
+            $(".paymentDiv").bind("click", function(){
+                var adverts = "";
+                var mas_advert = $("#table-adverts tbody .md-check:checked");
+                if (mas_advert.length>=10){
+                    adverts = mas_advert[0].getAttribute("name");
+                    for (i = 1; i < mas_advert.length; i++) {
+                        adverts = adverts +","+ mas_advert[i].getAttribute("name");
+                    }
+                    location.href = "/payment/?count="+count_checked_advert+"&adverts="+adverts;
+                }
+            });
+            initTable();
+        });
+
+        function initTable(){
+            $(".description .dotLink").click(function () {
+                $("#div-desription-" + $(this).attr("name")).show();
+                return false;
+            });
+
+            $(".description .dotLink").bind("blur",function () {
+                $("#div-desription-" + $(this).attr("name")).hide();
+                return false;
+            });
+
+            $(".phone .dotLink").click(function () {
+                $("#div-phone-" + $(this).attr("name")).show();
+                return false;
+            });
+
+            $(".phone .dotLink").bind("blur",function () {
+                $("#div-phone-" + $(this).attr("name")).hide();
+                return false;
+            });
+
+            $("#table-adverts .md-check").bind("change", function () {
+                count_checked_advert = $("#table-adverts tbody .md-check:checked").length;
+                if (count_checked_advert > 0){
+                    if (count_checked_advert < 10){
+                        $(".ribbon").removeClass("ribbon-color-warning");
+                        if (count_checked_advert == 1){
+                            $("#label-check").html("В корзине "+count_checked_advert+" объявление.<br>Минимальная покупка -<br>10 объявлений.");
+                        }
+                        else if (count_checked_advert <5){
+                            $("#label-check").html("В корзине "+count_checked_advert+" объявления.<br>Минимальная покупка -<br>10 объявлений.");
+                        }
+                        else{
+                            $("#label-check").html("В корзине "+count_checked_advert+" объявлений.<br>Минимальная покупка -<br>10 объявлений.");
+                        }
+                    }
+                    else{
+                        $("#label-check").html("Оплатить покупку<br />"+count_checked_advert+" объявлений");
+                        
+                        $(".ribbon").addClass("ribbon-color-warning");
+                    }
+                    $(".paymentDiv").show();
+                }
+                else{
+                    $(".paymentDiv").hide();
+                }
+                
+            });
+        }
+
+        function initChkParam() {
+            $(".check-param").bind("change", function () {
+                var param_id = $(this).attr("name");
+                $("#div-chk-param-value-" + param_id).empty();
+                if ($(this).prop("checked")) {
+                    $.getJSON('/data/getParamValues/', {
+                        "param_id": param_id
+                    }, function (data) {
+                        for (i = 0; i < data.length; i++) {
+                            $("#div-chk-param-value-" + param_id).append('' +
+                                '<div class="md-checkbox" id="div-chk-param-' + param_id + '-value-' + data[i].value_id + '">' +
+                                '<input type="checkbox" id="chk-param-' + param_id + '-value-' + data[i].value_id + '" name="' + data[i].value_id + '" class="md-check check-value">' +
+                                '<label for="chk-param-' + param_id + '-value-' + data[i].value_id + '">' +
+                                '<span class="inc"></span>' +
+                                '<span class="check"></span>' +
+                                '<span class="box"></span> ' + data[i].value + '' +
+                                '</label>' +
+                            '</div>');
+                        }
+                    });
+                }
+            });
+        }
+
+        function showParamFromCategory() {
+            $("#div-chk-list-for-category").empty();
+            var category_id = $("#select-category").val();
+            $.getJSON('/data/getParams/', {
+                "category_id": category_id
+            }, function (data) {
+                for (i = 0; i < data.length; i++) {
+                    $("#div-chk-list-for-category").append('<div class="row"><div class="col-md-6">' +
+                        '<div class="md-checkbox" id="div-chk-param-name-' + data[i].id + '">' +
+                        '<input type="checkbox" id="chk-param-name-' + data[i].id + '" name="' + data[i].id + '" class="md-check check-param">' +
+                        '<label for="chk-param-name-' + data[i].id + '">' +
+                        '<span class="inc"></span>' +
+                        '<span class="check"></span>' +
+                        '<span class="box"></span> ' + data[i].name + '' +
+                        '</label>' +
+                    '</div></div><div class="col-md-6"><div class="md-checkbox-list" id="div-chk-param-value-' + data[i].id + '"></div></div></div>');
+                }
+                initChkParam();
+            });
+        }
+
+        function searchAdverts() {
+            var region_id = $("#select-region").val();
+            var category_id = $("#select-category").val();
+            var param_ids = "";
+            var value_ids = "";
+
+            var param_array = $(".check-param:checked");
+            for (i = 0; i < param_array.length; i++) {
+                if (param_ids.length > 0) {
+                    param_ids = param_ids + "," + param_array[i].getAttribute("name");
+                }
+                else {
+                    param_ids = param_array[i].getAttribute("name");
+                }
+                var value_array = $("#div-chk-param-value-" + param_array[i].getAttribute("name") + " .check-value:checked");
+                var v = "";
+                for (j = 0; j < value_array.length; j++) {
+                    if (v.length == 0) {
+                        v = value_array[j].getAttribute("name");
+                    }
+                    else {
+                        v = v + "," + value_array[j].getAttribute("name");
+                    }
+                }
+                if (value_ids.length > 0) {
+                    value_ids = value_ids + ";" + v;
+                }
+                else {
+                    value_ids = v;
+                }
+            }
+
+            $.ajax({
+                type: 'post',
+                url: '/adverts/',
+                data: {
+                    "region_id": region_id,
+                    "category_id": category_id,
+                    "param_ids": param_ids,
+                    "value_ids": value_ids,
+                    "free": free
+                },
+                success: function (data) {
+                    $("#table-adverts").html($(data).find("#table-adverts").html());
+                    $("#div-chk-list-for-category").hide('slow');
+                    $("#a-param-slide .fa").toggle();
+                    initTable();
+                },
+                error: function (data) {
+                    toastr["error"]("Произошла ошибка", "");
+                }
+            });
+        }
+    </script>
+}

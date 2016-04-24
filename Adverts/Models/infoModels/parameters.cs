@@ -42,7 +42,7 @@ namespace infoModels
         {
             IList<param_name> result = new List<param_name>();
 
-            string sqlText = "SELECT * FROM param_advert_for_export ORDER BY category_id";
+            string sqlText = "SELECT * FROM param_advert_for_export ORDER BY param_name_sort";
 
             DataTable itemTable = sqlData.sqlQueryFill("data-postresql", sqlText);
             foreach (DataRow itemRow in itemTable.Rows)
@@ -62,7 +62,7 @@ namespace infoModels
         {
             IList<param_name> result = new List<param_name>();
 
-            string sqlText = "SELECT * FROM param_advert_for_export WHERE category_id="+category_id.ToString()+ " ORDER BY param_name";
+            string sqlText = "SELECT * FROM param_advert_for_export WHERE category_id="+category_id.ToString()+ " ORDER BY param_name_sort";
 
             DataTable itemTable = sqlData.sqlQueryFill("data-postresql", sqlText);
             foreach (DataRow itemRow in itemTable.Rows)

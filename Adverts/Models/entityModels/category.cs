@@ -57,5 +57,29 @@ namespace entityModels
             }
             return result;
         }
+
+        public static IList<category> getListToPeople()
+        {
+            IList<category> result = new List<category>();
+
+            string sqlText = "SELECT * FROM categories WHERE id IN (1,8,11,24) ORDER BY name";
+
+            DataTable itemTable = sqlData.sqlQueryFill("data-postresql", sqlText);
+            foreach (DataRow itemRow in itemTable.Rows)
+            {
+                category insertItem = new category
+                {
+                    id = Convert.ToInt32(itemRow["id"]),
+                    name = Convert.ToString(itemRow["name"]).Trim(),
+                    rest_avito_code = Convert.ToString(itemRow["rest_avito_code"]).Trim()
+                };
+                if (insertItem.id == constant.str.category_realty_id)
+                {
+                    insertItem.name = constant.str.category_realty_name;
+                }
+                result.Add(insertItem);
+            }
+            return result;
+        }
     }
 }

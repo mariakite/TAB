@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Регистрация";
+    Layout = "~/Views/Shared/_loginLayout.cshtml";
+    string UrlBack = HttpContext.Current.Request.UrlReferrer != null ? HttpContext.Current.Request.UrlReferrer.ToString() : "/";
+    int result = ViewBag.result != null ? (int)ViewBag.result : 0;
+}
+
+@section PageLevelStyles{
+    <link href="~/Assets/pages/css/login-3.min.css" rel="stylesheet" type="text/css" />
+}
+
+<div class="content">
+    @if (result == (int)constant.status_registrate.already_insert)
+    {
+        <div class="alert alert-danger">
+            Пользователь с таким email уже зарегистрирован.
+        </div>
+    }
+    else if (result == (int)constant.status_registrate.error)
+    {
+        <div class="alert alert-danger">
+            Произошла ошибка.
+        </div>
+    }
+
+    <form class="register-form" action="@Url.Action("Registration","Account")" method="post" style="display: block;">
+        <h3>Регистрация</h3>
+        <div class="form-group" id="div-email">
+            <label class="control-label visible-ie8 visible-ie9">Email</label>
+            <div class="input-icon">
+                <i class="fa fa-envelope"></i>
+                <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email" id="input-email">
+            </div>
+            <span class="help-block" style="display:none;">Введите корректный email</span>
+        </div>
+        <div class="form-group" id="div-password">
+            <label class="control-label visible-ie8 visible-ie9">Пароль</label>
+            <div class="input-icon">
+                <i class="fa fa-lock"></i>
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="input-password" placeholder="Пароль" name="password">
+            </div>
+            <span class="help-block" style="display:none;">Пароль должен быть длиннее 6 символов и содержать буквы, цифры и небуквенные символы.</span>
+        </div>
+        <div class="form-group" id="div-confirmpassword">
+            <label class="control-label visible-ie8 visible-ie9">Подтвердите пароль</label>
+            <div class="controls">
+                <div class="input-icon">
+                    <i class="fa fa-check"></i>
+                    <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Подтверждение пароля" id="input-confirmpassword" name="confirmpassword">
+                </div>
+                <span class="help-block" style="display:none;">Пароли не совпадают</span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" id="register-submit-btn" class="btn green pull-right"> Зарегистрироваться </button>
+            <a href="@UrlBack" class="btn grey-salsa btn-outline"> Отменить </a>
+            
+        </div>
+    </form>
+</div>
+
+@section PageLevelScripts{
+    <script src="~/static/js/Account/registration.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".register-form").on("submit", function (e) {
+                if (!ValidInsertData()) {
+                    return false;
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

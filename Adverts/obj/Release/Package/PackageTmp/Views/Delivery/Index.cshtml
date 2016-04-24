@@ -1,0 +1,359 @@
+﻿@{
+    ViewBag.Title = "Создать рассылку";
+    IList<entityModels.region> regionList = ViewBag.RegionList;
+    IList<entityModels.category> categoryList = ViewBag.CategoryList;
+    IList<infoModels.param_name> paramNameList = ViewBag.ParamNameList;
+}
+@model usersModels.user
+
+@section PageLevelStyles{
+    <link href="~/Assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/Assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        .select2-container--bootstrap .select2-selection {
+            border: none !important;
+        }
+    </style>
+}
+
+<div class="page-content-inner">
+    <div class="portlet light portlet-fit ">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-envelope font-green"></i>
+                <span class="caption-subject font-green bold uppercase">@ViewBag.Title</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="portlet-body form">
+                        <form role="form" id="form-delivery">
+
+                            <div class="form-body">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    @if (Model.id > 0)
+                                    {
+                                        <input type="text" class="form-control" id="input-email" name="email" value="@Model.email" disabled="disabled" />
+                                    }
+                                    else
+                                    {
+                                        <input type="text" class="form-control" id="input-email" name="email" />
+                                    }
+                                    <label for="input-email">Email</label>
+                                    <span class="help-block"></span>
+                                </div>
+
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <select class="form-control select2" id="select-region">
+                                        @foreach (entityModels.region item in regionList)
+                                        {
+                                            if (item.id == (int)constant.str.region_spb_id)
+                                            {
+                                                <option value="@item.id" selected>@item.name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.id">@item.name</option>
+                                            }
+                                        }
+                                    </select>
+                                    <label for="select-region">Регион</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <select class="form-control select2" id="select-category">
+                                        @foreach (entityModels.category item in categoryList)
+                                        {
+                                            <option value="@item.id">@item.name</option>
+                                        }
+                                    </select>
+                                    <label for="select-category">Категория</label>
+                                </div>
+
+                                <div class="form-group form-md-checkboxes" id="div-chk-for-category">
+                                    <label>Параметры</label>
+                                    <div class="md-checkbox-list" id="div-chk-list-for-category"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions noborder">
+                                <button type="submit" class="btn blue">Сохранить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6" id="div-help">
+                    @if (!Convert.ToBoolean(HttpContext.Current.Session["is_auth"]))
+                    {
+                        <div class="not-auth">
+                            <p><a href="/Account/Login/">Авторизуйтесь</a>, если у&nbsp;вас уже есть аккаунт. </p>
+                            <p>Если вы&nbsp;еще не&nbsp;зарегистрированы на&nbsp;нашем сайте, введите email, на&nbsp;который вы&nbsp;хотите получать уведомления о&nbsp;новых объявлениях. </p>
+                            <p>После создания рассылки, вам будет отправлено письмо с&nbsp;данными для входа в&nbsp;личный кабинет, где вы&nbsp;сможете оплачивать и&nbsp;управлять своими рассылками.</p>
+                        </div>
+                    }
+                    <p>Частота рассылки уведомлений&nbsp;&mdash; 15&nbsp;минут (индивидуально рассмотрим другой интервал, для этого напишите нам на&nbsp;<a href="mailto:info@tabavi.ru">info@tabavi.ru</a>).</p>
+                    @if (Convert.ToBoolean(HttpContext.Current.Session["is_auth"]))
+                    {
+                        <div class="auth">
+                            <p>Оплатить рассылку вы можете в <a href="/Account/Delivery">своих рассылках</a>.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="auth" style="display:none;">
+                            <p>Оплатить рассылку вы можете в <a href="/Account/Delivery">своих рассылках</a>.</p>
+                        </div>
+                    }
+
+                    <p>Тарифы:</p>
+                    <p>
+                        <table class="table table-bordered" style="width:auto;">
+                            <tbody>
+                                <tr>
+                                    <td>30&nbsp;дней</td>
+                                    <td align="right">2&nbsp;000&nbsp;<span class="rubCSS">Р</span></td>
+                                </tr>
+                                <tr>
+                                    <td>15&nbsp;дней</td>
+                                    <td align="right">1&nbsp;500&nbsp;<span class="rubCSS">Р</span></td>
+                                </tr>
+                                <tr>
+                                    <td>7&nbsp;дней</td>
+                                    <td align="right">1&nbsp;000&nbsp;<span class="rubCSS">Р</span></td>
+                                </tr>
+                                <tr>
+                                    <td>3&nbsp;дня</td>
+                                    <td align="right">500&nbsp;<span class="rubCSS">Р</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section PageLevelScripts {
+    <script src="~/Assets/global/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/Assets/global/plugins/select2/js/i18n/ru.js"></script>
+    <script src="~/Assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+    <script>
+        var status_ok = @((Int32)constant.status.ok);
+        var status_already_insert = @((Int32)constant.status_registrate.already_insert);
+        var status_create_user= @((Int32)constant.status_registrate.create_user);
+        var spb_id = @((int)constant.str.region_spb_id);
+
+    var ComponentsSelect2 = function () {
+
+        var initSelect2 = function () {
+            $.fn.select2.defaults.set("theme", "bootstrap");
+            $(".select2").select2({
+                width: null
+            });
+        }
+
+        return {
+            init: function () {
+                initSelect2();
+            }
+        };
+
+    }();
+
+    var FormValidation = function () {
+        var initValidation = function () {
+            var form1 = $('#form-delivery');
+            var error1 = $('.alert-danger', form1);
+            var success1 = $('.alert-success', form1);
+
+            form1.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "",  // validate all fields including form hidden input
+                messages: {
+                    email: {
+                        email: "Введите корректный Email",
+                        required: "Поле обязательно для заполнения"
+                    }
+                },
+                rules: {
+                    email: {
+                        required: true,
+                        email: true
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit
+                    success1.hide();
+                    error1.show();
+                    App.scrollTo(error1, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                    $(element)
+                        .closest('.form-group').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.form-group').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.form-group').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success1.show();
+                    error1.hide();
+                }
+            });
+        }
+        return {
+            init: function () {
+                initValidation();
+            }
+        };
+    }();
+
+    jQuery(document).ready(function () {
+        ComponentsSelect2.init();
+        FormValidation.init();
+    });
+
+    $(document).ready(function () {
+        showParamFromCategory();
+        $("#select-category").bind("change", function () {
+            showParamFromCategory();
+        });
+
+        $("#select-region").bind("change", function () {
+            if ($("#select-region").val()==spb_id){
+                $("#select-category").attr("disabled",false);
+            }
+            else{
+                $("#select-category").select2("val", 1);
+                $("#select-category").attr("disabled",true);
+            }
+        });
+
+        $("#form-delivery").on("submit", function (e){
+            if ($(".has-error").length == 0){
+                saveDelivery();
+            }
+            e.preventDefault();
+        });
+    });
+
+    function initChkParam() {
+        $(".check-param").bind("change", function () {
+            var param_id = $(this).attr("name");
+            $("#div-chk-param-value-" + param_id).empty();
+            if ($(this).prop("checked")) {
+                $.getJSON('/data/getParamValues/', {
+                    "param_id": param_id
+                }, function (data) {
+                    for (i = 0; i < data.length; i++) {
+                        $("#div-chk-param-value-"+param_id).append('' +
+                            '<div class="md-checkbox" id="div-chk-param-'+param_id+'-value-' + data[i].value_id + '">' +
+                            '<input type="checkbox" id="chk-param-' + param_id + '-value-' + data[i].value_id + '" name="' + data[i].value_id + '" class="md-check check-value">' +
+                            '<label for="chk-param-' + param_id + '-value-' + data[i].value_id + '">' +
+                            '<span class="inc"></span>' +
+                            '<span class="check"></span>' +
+                            '<span class="box"></span> ' + data[i].value + '' +
+                            '</label>' +
+                        '</div>');
+                    }
+                });
+            }
+        });
+    }
+
+    function showParamFromCategory() {
+        $("#div-chk-list-for-category").empty();
+        var category_id = $("#select-category").val();
+        $.getJSON('/data/getParams/', {
+            "category_id": category_id
+        }, function (data) {
+            for (i = 0; i < data.length; i++) {
+                $("#div-chk-list-for-category").append('<div class="row"><div class="col-md-6">' +
+                    '<div class="md-checkbox" id="div-chk-param-name-'+data[i].id+'">'+
+                    '<input type="checkbox" id="chk-param-name-'+data[i].id+'" name="'+data[i].id+'" class="md-check check-param">'+
+                    '<label for="chk-param-name-'+data[i].id+'">'+
+                    '<span class="inc"></span>'+
+                    '<span class="check"></span>'+
+                    '<span class="box"></span> '+data[i].name+''+
+                    '</label>'+
+                '</div></div><div class="col-md-6"><div class="md-checkbox-list" id="div-chk-param-value-' + data[i].id + '"></div></div></div>');
+            }
+            initChkParam();
+        });
+    }
+
+    function saveDelivery() {
+        var email = $.trim($("#input-email").val());
+        var region_id = $("#select-region").val();
+        var category_id = $("#select-category").val();
+        var param_ids = "0";
+        var value_ids = "0";
+
+        var param_array = $(".check-param:checked");
+        for (i = 0; i < param_array.length; i++) {
+            param_ids = param_ids + "," + param_array[i].getAttribute("name");
+            var value_array = $("#div-chk-param-value-" + param_array[i].getAttribute("name") + " .check-value:checked");
+            var v = "";
+            for (j = 0; j < value_array.length; j++) {
+                if (v.length == 0) {
+                    v = value_array[j].getAttribute("name");
+                }
+                else {
+                    v = v+","+value_array[j].getAttribute("name");
+                }
+            }
+            value_ids = value_ids + ";" + v;
+        }
+        $.ajax({
+            type: 'post',
+            url: '/data/saveDeliveryParam/',
+            data: {
+                "email": email,
+                "region_id": region_id,
+                "category_id": category_id,
+                "param_ids": param_ids,
+                "value_ids": value_ids
+            },
+            success: function (data) {
+                $("#form-delivery .alert").remove();
+                if (data == status_ok){
+                    toastr["success"]("Сохранили настройки рассылки", "");
+                    $("#form-delivery").prepend('<div class="alert alert-success">Рассылка успешно создана. Она будет активирована после оплаты в личном кабинете.</div>');
+                }
+                else if (data == status_create_user) {
+                    toastr["success"]("Пользователь "+email+" успешно зарегистрирован", "");
+                    toastr["success"]("Сохранили настройки рассылки", "");
+                    $(".not-auth").remove();
+                    $(".auth").show();
+                    $("#div-main-menu").html('<div class="hor-menu"><ul class="nav navbar-nav"><li><a href="/">TABAVI</a></li><li><a href="/Account/Delivery">Мои рассылки</a></li><li><a href="/Delivery">Новая рассылка</a></li><li><a href="/Adverts">Объявления</a></li><li><a href="/Account/Settings">Настройки</a></li></ul></div><div class="hor-menu" style="float:right"><ul class="nav navbar-nav"><li><a href="/Account/Logout">Выйти</a></li></ul></div>');
+                    $("#form-delivery").prepend('<div class="alert alert-success">Рассылка успешно создана. Она будет активирована после оплаты в личном кабинете. Для доступа в личный кабинет используйте данные, которые были отправлены Вам в письме.</div>');
+                }
+                else if (data == status_already_insert) {
+                    toastr["error"]("Пользователь с таким email уже зарегистрирован", "");
+                    $("#form-delivery").prepend('<div class="alert alert-danger">Пользователь с таким email уже зарегистрирован. <a href="/account/login/">Авторизуйтесь</a> или введите другой email для получения рассылки.</div>');
+                }
+                else{
+                    toastr["error"]("Произошла ошибка", "");
+                }
+            },
+            error: function (data) {
+                toastr["error"]("Произошла ошибка", "");
+            }
+        });
+
+    }
+    </script>
+}

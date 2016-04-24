@@ -1,0 +1,100 @@
+﻿@using Helpers.Html.Models
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title – @constant.str.name_project</title>
+    <meta content="TABAVI парсер объявлений номеров телефонов Авито до их модерации по Санкт-Петербургу, Москве и другим регионам" name="description" />
+    <meta content="парсер, объявления, номер телефона, Авито, модерация, публикация, Санкт-Петербург, Москва, Недвижимость, Автомобили, Земельные участки, поиск" name="keywords" />
+    <meta content="" name="author" />
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+    <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+    @* Metronic Styles *@
+    @Styles.Render("~/Assets/GlobalMandatoryStyles")
+
+    @RenderSection("PageLevelStyles", required: false)
+
+    @Styles.Render("~/Assets/ThemeGlobalStyles")
+    @Styles.Render("~/Assets/ThemeLayoutStyles")
+    @* End Metronic Styles *@
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+
+</head>
+<body class="page-container-bg-solid page-header-menu-fixed page-md login">
+    <div class="page-header">
+        <div class="page-header-top">
+            <div class="container">
+                <div class="page-logo" style="padding-top:23px">
+                    <a href="/" style="color:white;font-size:large;">TABAVI</a>
+                </div>
+                <a href="javascript:;" class="menu-toggler"></a>
+            </div>
+        </div>
+        @Html.Partial("partials/mainMenu")
+    </div>
+
+    <div class="page-container">
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <div class="container">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("partials/footer")
+    <div class="scroll-to-top">
+        <i class="icon-arrow-up"></i>
+    </div>
+
+
+    @Scripts.Render("~/Assets/CorePlugins")
+    @Scripts.Render("~/Assets/GlobalScripts")
+    @Scripts.Render("~/Assets/LayoutScripts")
+
+    @{
+        var tempToastr = TempData["Toastr"];
+    }
+    @if (tempToastr != null)
+    {
+        var toastr = (Toastr)tempToastr;
+        var type = "";
+        switch (toastr.Type)
+        {
+            case ToastrType.Success:
+                type = "success";
+                break;
+            case ToastrType.Warning:
+                type = "warning";
+                break;
+            case ToastrType.Danger:
+                type = "error";
+                break;
+            case ToastrType.Info:
+                type = "info";
+                break;
+            default:
+                type = null;
+                break;
+        }
+        if (!string.IsNullOrWhiteSpace(type))
+        {
+            <script>
+                toastr["@type"]("@Html.Raw(toastr.Message.Replace("\n", "<br />"))", "@toastr.Title");
+            </script>
+        }
+    }
+
+    @Html.Partial("partials/counters")
+    @RenderSection("PageLevelScripts", required: false)
+</body>
+
+
+
+</html>

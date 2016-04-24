@@ -42,7 +42,7 @@ namespace entityModels
         {
             IList<region> result = new List<region>();
 
-            string sqlText = "SELECT * FROM regions ORDER BY name";
+            string sqlText = "SELECT * FROM regions WHERE id IN (77,78) ORDER BY name";
 
             DataTable itemTable = sqlData.sqlQueryFill("data-postresql", sqlText);
             foreach (DataRow itemRow in itemTable.Rows)

@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "Оплата";
+    string hash_key_order = ViewBag.hash_key_order != null ? ViewBag.hash_key_order: "";
+    string sum = ViewBag.sum != null ? ViewBag.sum : "0";
+}
+
+@section PageLevelStyles{
+    <style>
+        
+    </style>
+}
+
+<div class="page-content-inner">
+    <div class="portlet light portlet-fit ">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-briefcase font-green"></i>
+                <span class="caption-subject font-green bold uppercase">@ViewBag.Title</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="portlet-body form">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form method="POST" action="https://money.yandex.ru/quickpay/confirm.xml">
+                            <input type="hidden" name="receiver" value="41001674977910">
+                            <input type="hidden" name="formcomment" value="TABAVI-@ViewBag.type" />
+                            <input type="hidden" name="short-dest" value="TABAVI-@ViewBag.type" />
+                            <input type="hidden" name="label" value="@hash_key_order" />
+                            <input type="hidden" name="quickpay-form" value="donate" />
+                            <input type="hidden" name="targets" value="Оплата заказа на сайте tabavi.ru">
+
+                            <input type="hidden" name="comment" value="@hash_key_order" />
+                            <input type="hidden" name="need-fio" value="false" />
+                            <input type="hidden" name="need-email" value="false" />
+                            <input type="hidden" name="need-phone" value="false" />
+                            <input type="hidden" name="need-address" value="false" />
+                            <input type="hidden" name="successURL" value="@ViewBag.url" />
+                            <div class="form-body">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <input type="text" name="sum" id="input-sum" class="form-control" value="@sum" data-type="number" readonly />
+                                    <label for="input-email">Сумма</label>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+
+                            <div class="md-radio-list">
+                                <div class="md-radio">
+                                    <input type="radio" id="radio-PC" name="paymentType" class="md-radiobtn" value="PC">
+                                    <label for="radio-PC">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span> Яндекс.Деньгами
+                                    </label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio-AC" name="paymentType" class="md-radiobtn" value="AC" checked>
+                                    <label for="radio-AC">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span> Банковской картой
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div class="form-actions noborder">
+                                <button type="submit" class="btn blue">Перевести</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>
+
+

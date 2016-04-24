@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Личный кабинет";
+}
+@model usersModels.user
+
+<div class="page-content-inner">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="portlet light portlet-fit ">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-settings font-green"></i>
+                        <span class="caption-subject font-green bold uppercase">Основные настройки</span>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="portlet-body form">
+                        <form role="form" id="form-setting-email">
+                            <div class="alert alert-danger" style="display:none;">Пользователь с таким email уже зарегистрирован.</div>
+                            <div class="form-body">
+                                <div class="form-group form-md-line-input form-md-floating-label" id="div-email">
+                                    <input type="text" class="form-control" id="input-email" name="email" value="@Model.email">
+                                    <label for="input-email">Email</label>
+                                    <span class="help-block" style="display:none;">Введите корректный email</span>
+                                </div>
+
+                            </div>
+
+                            <div class="form-actions noborder">
+                                <button type="submit" class="btn blue">Сохранить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="portlet light portlet-fit ">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-key font-green"></i>
+                        <span class="caption-subject font-green bold uppercase">Смена пароля</span>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="portlet-body form">
+                        <form role="form" id="form-setting-password">
+                            <div class="alert alert-danger" style="display:none;">Неверный старый пароль.</div>
+                            <div class="form-body">
+                                <div class="form-group form-md-line-input form-md-floating-label" id="div-old-password">
+                                    <input type="password" class="form-control" id="input-old-password" name="old_password" />
+                                    <label for="input-old-password">Старый пароль</label>
+                                    <span class="help-block" style="display:none;">Введите правильный пароль</span>
+                                </div>
+                            </div>
+
+                            <div class="form-body">
+                                <div class="form-group form-md-line-input form-md-floating-label" id="div-new-password">
+                                    <input type="password" class="form-control" id="input-new-password" name="new_password" />
+                                    <label for="input-new-password">Новый пароль</label>
+                                    <span class="help-block" style="display:none;">Пароль должен быть длиннее 6 символов и содержать буквы, цифры и небуквенные символы.</span>
+                                </div>
+                            </div>
+
+                            <div class="form-body">
+                                <div class="form-group form-md-line-input form-md-floating-label" id="div-confirm-password">
+                                    <input type="password" class="form-control" id="input-confirm-password" name="confirm_password" />
+                                    <label for="input-confirm-password">Подтверждение пароля</label>
+                                    <span class="help-block" style="display:none;">Пароли не совпадают</span>
+                                </div>
+                            </div>
+
+                            <div class="form-actions noborder">
+                                <button type="submit" class="btn blue">Сохранить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section PageLevelScripts{
+    <script>
+        var status_success = @((Int32)constant.status_registrate.success);
+        var status_already_insert = @((Int32)constant.status_registrate.already_insert);
+        var status_incorrect_password = @((Int32)constant.status_registrate.incorrect_password);
+    </script>
+    <script src="~/static/js/Account/settings.js"></script>    
+}
+

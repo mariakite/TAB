@@ -1,0 +1,69 @@
+/* here you can put your own css to customize and override the theme */
+
+
+.list-item-footer {
+    text-align: right;
+    color: #999;
+    font-size: 13px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.list-head-title-container h3.list-title {
+    font-size: 14px;
+}
+
+.mt-element-list .list-simple.mt-list-container ul > .mt-list-item > .list-item-content > h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.popover.confirmation {
+    min-width: 250px;
+}
+
+    .popover.confirmation .popover-title {
+        color: black;
+    }
+
+.white_round_shadow {
+    background-color: #fff;
+    height: 60px;
+    width: 60px;
+    float: left;
+    border-radius: 50%;
+    text-align: center;
+    position: absolute;
+    margin-top: -20px;
+    margin-left: -20px;
+    vertical-align: middle;
+    box-shadow: 0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.22);
+}
+        .white_rect {
+            background-color: #fff;
+            width: 45px;
+            height: 48px;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+.user-card-popover {
+    max-width: 320px !important;
+    margin-top: -85px !important;
+}
+
+.popover-close-btn {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+}
+.popover-close-btn i {
+    color: #bbb;
+}
+
+.list-datetime {
+    font-size: 11px;
+    color: #999;
+}

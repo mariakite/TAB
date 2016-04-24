@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Авторизация";
+    Layout = "~/Views/Shared/_loginLayout.cshtml";
+    int result = ViewBag.result != null ? (int)ViewBag.result : 0;
+}
+
+@section PageLevelStyles{
+    <link href="~/Assets/pages/css/login-3.min.css" rel="stylesheet" type="text/css" />
+}
+
+    <div class="content">
+        @if (result != 0)
+        {
+            <div class="alert alert-danger">
+                Пользователь с такими данными не найден.
+            </div>
+        }
+
+        <form class="login-form" action="@Url.Action("Login","Account")" method="post">
+            <h3 class="form-title">Авторизация</h3>
+            <div class="alert alert-danger display-hide">
+                <button class="close" data-close="alert"></button>
+                <span> Введите email и пароль. </span>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">Email</label>
+                <div class="input-icon">
+                    <i class="fa fa-envelope"></i>
+                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">Пароль</label>
+                <div class="input-icon">
+                    <i class="fa fa-lock"></i>
+                    <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Пароль" name="password" />
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn green pull-right"> Войти </button>
+                <a href="@Url.Action("Registration","Account")" class="btn green btn-outline" style="border-width: 1px !important;">Зарегистрироваться</a>
+            </div>
+            
+            <div class="forget-password">
+                <h4>Забыли пароль ?</h4>
+                <p>
+                    не беспокойтесь, нажмите
+                    <a href="@Url.Action("ForgetPassword","Account")"> сюда </a> чтобы сбросить пароль.
+                </p>
+            </div>
+            @*<div class="create-account">
+                <p>
+                    <a href="@Url.Action("Registration","Account")" id="register-btn"> Зарегистрироваться </a>
+                </p>
+            </div>*@
+        </form>
+    </div>

@@ -124,17 +124,31 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdvertsController.cs" />
     <Compile Include="Controllers\DataController.cs" />
+    <Compile Include="Controllers\DeliveryController.cs" />
     <Compile Include="Controllers\MainController.cs" />
+    <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Html\Models\Toastr.cs" />
     <Compile Include="Models\entityModels\category.cs" />
+    <Compile Include="Models\entityModels\advert.cs" />
+    <Compile Include="Models\entityModels\delivery.cs" />
     <Compile Include="Models\entityModels\region.cs" />
+    <Compile Include="Models\infoModels\info_param_name.cs" />
+    <Compile Include="Models\infoModels\info_param_value.cs" />
     <Compile Include="Models\infoModels\parameters.cs" />
+    <Compile Include="Models\paymentModels\delivery_access.cs" />
+    <Compile Include="Models\paymentModels\order.cs" />
     <Compile Include="Models\sqlData\sqlData.cs" />
+    <Compile Include="Models\tools\communicate.cs" />
+    <Compile Include="Models\tools\enums.cs" />
     <Compile Include="Models\tools\extensions.cs" />
+    <Compile Include="Models\tools\identity.cs" />
+    <Compile Include="Models\usersModels\user.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -5861,6 +5875,7 @@
     <Content Include="Assets\global\plugins\typeahead\README.md" />
     <Content Include="Assets\global\plugins\uniform\css\uniform.default.scss" />
     <Content Include="Assets\global\plugins\uniform\README.md" />
+    <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -5873,6 +5888,10 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="static\js\Account\forgetpassword.js" />
+    <Content Include="static\js\Account\settings.js" />
+    <Content Include="static\js\Account\registration.js" />
+    <Content Include="static\js\main.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -5887,10 +5906,20 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Main\Delivery.cshtml" />
     <Content Include="Views\Main\Index.cshtml" />
     <Content Include="Views\Shared\partials\mainMenu.cshtml" />
     <Content Include="Views\Shared\partials\result.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Shared\_loginLayout.cshtml" />
+    <Content Include="Views\Account\Registration.cshtml" />
+    <Content Include="Views\Account\Settings.cshtml" />
+    <Content Include="Views\Account\ForgetPassword.cshtml" />
+    <Content Include="Views\Account\Delivery.cshtml" />
+    <Content Include="Views\Payment\Index.cshtml" />
+    <Content Include="Views\Adverts\Index.cshtml" />
+    <Content Include="Views\Delivery\Index.cshtml" />
+    <Content Include="Views\Shared\partials\footer.cshtml" />
+    <Content Include="Views\Shared\partials\counters.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
